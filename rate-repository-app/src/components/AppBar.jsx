@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, Text, TouchableWithoutFeedback } from 'react-native';
+import { Link } from 'react-router-native';
 import Constants from 'expo-constants';
 import theme from '../theme';
 
@@ -9,7 +10,13 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.appBarBackground,
     color: '#ffffff',
     paddingBottom: Constants.statusBarHeight,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    
     // ...
+  },
+  tab: {
+    paddingRight: 30,
   },
   text: {
     color: '#ffffff',
@@ -19,15 +26,21 @@ const styles = StyleSheet.create({
   // ...
 });
 
-const AppBarTab = ({name}) => {
-  return <View style={styles.container}>{/* ... */}<Text style={styles.text}>{name}</Text></View>;
+const AppBarTab = ({name, link}) => {
+  return (
+    <View style={styles.tab}>
+      <Link to={link}>
+        <Text style={styles.text}>{name}</Text>
+      </Link>
+    </View>
+  );
 };
 
 const AppBar = () => {
   return (
   <TouchableWithoutFeedback onPress={() => alert('Pressed!')}>
-    <View>
-      <AppBarTab name="Repositories" />
+    <View style={styles.container}>
+      <AppBarTab name="Repositories" link='/'/>
       <AppBarTab name="Sign in" link='/signin'/>
     </View>
   </TouchableWithoutFeedback>
