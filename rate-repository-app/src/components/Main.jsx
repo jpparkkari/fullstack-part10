@@ -1,8 +1,10 @@
 import React from 'react';
 //import Constants from 'expo-constants';
-import { StyleSheet, View, TouchableWithoutFeedback } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import { Route, Switch, Redirect } from 'react-router-native';
 import RepositoryList from './RepositoryList';
 import AppBar from './AppBar';
+import SignIn from './SignIn';
 
 const styles = StyleSheet.create({
   container: {
@@ -16,10 +18,17 @@ const styles = StyleSheet.create({
 const Main = () => {
   return (
     <View style={styles.container}>
-    <TouchableWithoutFeedback onPress={() => alert('Pressed!')}>
-      <AppBar />
-    </TouchableWithoutFeedback>
-      <RepositoryList />
+      
+        <AppBar />
+      <Switch>
+        <Route path="/" exact>
+          <RepositoryList />
+        </Route>
+        <Route path="/signin" exact>
+          <SignIn />
+        </Route>
+        <Redirect to="/" />
+      </Switch>
     </View>
   );
 };

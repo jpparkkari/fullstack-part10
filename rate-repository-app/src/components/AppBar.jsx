@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { View, StyleSheet, Text, TouchableWithoutFeedback } from 'react-native';
 import Constants from 'expo-constants';
 import theme from '../theme';
 
@@ -24,7 +24,14 @@ const AppBarTab = ({name}) => {
 };
 
 const AppBar = () => {
-  return <AppBarTab name="Repositories" />;
+  return (
+  <TouchableWithoutFeedback onPress={() => alert('Pressed!')}>
+    <View>
+      <AppBarTab name="Repositories" />
+      <AppBarTab name="Sign in" link='/signin'/>
+    </View>
+  </TouchableWithoutFeedback>
+  );
 };
 
 export default AppBar;
