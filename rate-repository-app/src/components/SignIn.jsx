@@ -3,6 +3,7 @@ import { View, TouchableWithoutFeedback, StyleSheet } from 'react-native';
 import FormikTextInput from './FormikTextInput';
 import { Formik } from 'formik';
 import Text from './Text';
+import * as yup from 'yup';
 
 const styles = StyleSheet.create({
   separator: {
@@ -13,14 +14,7 @@ const styles = StyleSheet.create({
     alignContent: "space-between",
     padding: 10
   },
-  inputField: {
-    width: 200,
-    height: 40,
-    padding: 10,
-    borderWidth: 1,
-    borderRadius: 5
 
-  },
   signInField: {
     width: 200,
     height: 40,
@@ -34,14 +28,23 @@ const styles = StyleSheet.create({
   },
 });
 
+const validationSchema = yup.object().shape({
+  username: yup
+    .string()
+    .required('Username is required'),
+  password: yup
+    .string()
+    .required('Password is required'),
+});
+
 const initialValues = { username: '', password: '' };
 
 const SignInForm = ({ onSubmit }) => {
   return (
     <View style={styles.container} >
-      <FormikTextInput name="username" placeholder="Username" style={styles.inputField} />
+      <FormikTextInput name="username" placeholder="Username"  />
       <View style={styles.separator}></View>
-      <FormikTextInput name="password" placeholder="Password" style={styles.inputField} secureTextEntry="true"  />
+      <FormikTextInput name="password" placeholder="Password" secureTextEntry={true}  />
       <View style={styles.separator}></View>
       <TouchableWithoutFeedback onPress={onSubmit}  >
         <Text style={styles.signInField}>Sign in</Text>
@@ -56,7 +59,11 @@ const SignIn = () => {
     console.log(values);
   };
   return (
-    <Formik initialValues={initialValues} onSubmit={onSubmit}>
+    <Formik 
+      initialValues={initialValues} 
+      onSubmit={onSubmit}
+      validationSchema={validationSchema}
+    >
       {({ handleSubmit }) => <SignInForm onSubmit={handleSubmit} />}
     </Formik>
   );
