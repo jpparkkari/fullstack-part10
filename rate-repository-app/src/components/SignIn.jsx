@@ -12,7 +12,8 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: "space-around",
     alignContent: "space-between",
-    padding: 10
+    padding: 10,
+    backgroundColor: 'white'
   },
 
   signInField: {
