@@ -26,6 +26,7 @@ export default {
   extra: {
     // eslint-disable-next-line no-undef
     env: process.env.ENV,
+    // eslint-disable-next-line no-undef
     apolloUri: process.env.APOLLO_URI,
   },
 };
