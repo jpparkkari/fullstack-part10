@@ -1,8 +1,12 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import { View, StyleSheet, Text, TouchableOpacity, ScrollView } from 'react-native';
-import { Link } from 'react-router-native';
+import { Link, useHistory } from 'react-router-native';
 import Constants from 'expo-constants';
 import theme from '../theme';
+import AuthStorageContext from '../contexts/AuthStorageContext';
+import { useQuery } from '@apollo/react-hooks';
+import { GET_USER } from '../graphql/queries';
+import { useApolloClient } from '@apollo/client'; 
 
 const styles = StyleSheet.create({
   container: {
@@ -37,13 +41,36 @@ const AppBarTab = ({name, link}) => {
   );
 };
 
+const LogoutTab = () => {
+
+  const authStorage = useContext(AuthStorageContext);
+  const apolloClient = useApolloClient();
+  const history = useHistory();
+  return (
+    <TouchableOpacity
+      style={styles.tab}
+      onPress={async () => {
+        await authStorage.removeAccessToken();
+        apolloClient.resetStore();
+        history.push('/');
+      }}
+      >
+        <Text style={styles.text}>Log Out</Text>
+    </TouchableOpacity>
+  );
+};
+
 const AppBar = () => {
+  const signedUser = useQuery(GET_USER);
   return (
   //<TouchableWithoutFeedback onPress={() => alert('Pressed!')}>
     <View style={styles.container}>
       <ScrollView horizontal>
         <AppBarTab name="Repositories" link='/'/>
-        <AppBarTab name="Sign in" link='/signin'/>
+        {signedUser.data?.authorizedUser ? 
+          <LogoutTab  /> :
+          <AppBarTab name="Sign in" link='/signin'/>
+        }
       </ScrollView>
     </View>
   //</TouchableWithoutFeedback>
