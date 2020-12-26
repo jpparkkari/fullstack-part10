@@ -60,9 +60,9 @@ const CardHeader = ({item}) => {
         <Image style={headerStyles.avatar} source={{uri: item.ownerAvatarUrl }} />
       </View>
       <View style={headerStyles.infoContainer}>
-        <Text fontWeight='bold'>{item.fullName}</Text>
-        <Text color='textSecondary'>{item.description}</Text>   
-        <Text style={headerStyles.languageText}>{item.language}</Text>
+        <Text testID='repositoryName' fontWeight='bold'>{item.fullName}</Text>
+        <Text testID='description' color='textSecondary'>{item.description}</Text>   
+        <Text testID='language' style={headerStyles.languageText}>{item.language}</Text>
       </View>
            
     </View>
@@ -75,19 +75,23 @@ const CardFooter = ({item}) => {
   return (
     <View style={footerStyles.container}>
       <View>
-        <Text>{item.stargazersCount < 1000 ? item.stargazersCount : (item.stargazersCount/1000).toFixed(1) + "K" }</Text>
+        <Text testID='starCount'>
+          {item.stargazersCount < 1000 ? item.stargazersCount : (item.stargazersCount/1000).toFixed(1) + "K" }
+        </Text>
         <Text>Stars</Text>
       </View>
       <View>
-        <Text>{item.forksCount <1000 ? item.forksCount : (item.forksCount/1000).toFixed(1) + "K" }</Text>
+        <Text testID='forksCount'>
+          {item.forksCount <1000 ? item.forksCount : (item.forksCount/1000).toFixed(1) + "K" }
+        </Text>
         <Text>Forks</Text>
       </View>
       <View>
-        <Text>{item.reviewCount}</Text>
+        <Text testID='reviewCount'>{item.reviewCount}</Text>
         <Text>Reviews</Text>
       </View>
       <View>
-        <Text>{item.ratingAverage}</Text>
+        <Text testID='rating'>{item.ratingAverage}</Text>
         <Text>Rating</Text>
       </View>
     </View>
