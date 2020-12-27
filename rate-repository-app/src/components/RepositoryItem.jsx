@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Image, StyleSheet } from 'react-native';
+import { View, Image, StyleSheet, TouchableOpacity, Linking, Alert } from 'react-native';
 import Text from './Text';
 
 const styles = StyleSheet.create({
@@ -14,6 +14,17 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: '700',
   },
+  gitHubLink: {
+    alignSelf: 'stretch',
+    textAlign: 'center',
+    fontSize: 24,
+    color: 'white',
+    backgroundColor: 'blue',
+    overflow: 'hidden',
+    borderRadius: 6,
+    marginTop: 5,
+    padding: 12
+  }
 });
 
 const headerStyles = StyleSheet.create({
@@ -98,12 +109,25 @@ const CardFooter = ({item}) => {
   );
 };
 
-const RepositoryItem = ({item}) => {
+const RepositoryItem = ({item, showGitHubLink}) => {
+  const onPress = async () => {
+    const supported = Linking.canOpenURL(item.id);
+    if (supported) {
+      await Linking.openURL(item.url);
+    } else {
+      Alert.alert(`Don't know how to open url`);
+    }
+  };
+
   return(
     <View style={styles.container}>
       <CardHeader item={item}/>
       
       <CardFooter item={item} />
+      {showGitHubLink && 
+      <TouchableOpacity onPress={onPress}>
+        <Text style={styles.gitHubLink}>Open in GitHub</Text>
+      </TouchableOpacity>}
       </View>
   );
 };
