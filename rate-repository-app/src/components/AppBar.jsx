@@ -62,19 +62,25 @@ const LogoutTab = () => {
 
 const AppBar = () => {
   const signedUser = useQuery(GET_USER);
+
+
   return (
   //<TouchableWithoutFeedback onPress={() => alert('Pressed!')}>
     <View style={styles.container}>
       <ScrollView horizontal>
-        <AppBarTab name="Repositories" link='/'/>
+        <AppBarTab name="Repositories" link='/' />
+       
         {signedUser.data?.authorizedUser ? 
-          <LogoutTab  /> :
+          <>
+            <AppBarTab name="Create a Review" link='/review' />
+            <LogoutTab  />
+          </> :
           <AppBarTab name="Sign in" link='/signin'/>
         }
       </ScrollView>
     </View>
   //</TouchableWithoutFeedback>
-  );
+  ); 
 };
 
 export default AppBar;
