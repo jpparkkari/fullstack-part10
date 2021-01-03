@@ -1,9 +1,10 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { FlatList, View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Link } from 'react-router-native';
 import RepositoryItem from './RepositoryItem';
 import useRepositories from '../hooks/useRepositories';
 //import { useHistory } from 'react-router-native';
+import RNPickerSelect from 'react-native-picker-select';
 
 const styles = StyleSheet.create({
   separator: {
@@ -59,11 +60,50 @@ const repositories = [
   },
 ];*/
 
+
+
 export const ItemSeparator = () => <View style={styles.separator} />;
 
+const Dropdown = ({setVariables}) => {
 
+  const onChange = (value) => {
+    switch (value) {
+      case 'latest':
+        setVariables({ orderBy: 'CREATED_AT', orderDirection: 'DESC' });
+        //setOrderDirection('DESC');
+        //setOrderBy('CREATED_AT');
+        break;
+      case 'highest':
+        setVariables({ orderBy: 'RATING_AVERAGE', orderDirection: 'DESC' });
+        //setOrderDirection('DESC');
+        //setOrderBy('RATING_AVERAGE');
+        break;
+      case 'lowest':
+        setVariables({ orderBy: 'RATING_AVERAGE', orderDirection: 'ASC' });
+        //setOrderDirection('ASC');
+        //setOrderBy('RATING_AVERAGE');
+        break;
+      default:
+        setVariables({ orderBy: 'CREATED_AT', orderDirection: 'DESC' });
+        //setOrderDirection('DESC');
+        //setOrderBy('CREATED_AT');
+    }
+  };
 
-export const RepositoryListContainer = ({repositories}) => {
+  return (
+    <RNPickerSelect
+      onValueChange={(value) => onChange(value) }
+      items={[
+        
+        { label: 'Highest rated repositories', value: 'highest' },
+        { label: 'Lowes rated repositories', value: 'lowest' },
+      ]}
+      placeholder={{ label: 'Latest repositories', value: 'latest'}}
+    />
+  );
+};
+
+export const RepositoryListContainer = ({repositories, setVariables} ) => {
   
 /*  const history = useHistory();
 
@@ -80,6 +120,7 @@ export const RepositoryListContainer = ({repositories}) => {
     <FlatList
       data={repositoryNodes}
       ItemSeparatorComponent={ItemSeparator}
+      ListHeaderComponent={< Dropdown setVariables={setVariables} />}
       // other props
       renderItem={({ item }) => {
         return (
@@ -97,9 +138,11 @@ export const RepositoryListContainer = ({repositories}) => {
 };
 
 const RepositoryList = () => {
-  const { repositories } = useRepositories();
+  const [variables, setVariables] = useState({ orderBy: 'CREATED_AT', orderDirection: 'DESC' });
+  //const [orderBy, setOrderBy] = useState("CREATED_AT");
+  const { repositories } = useRepositories(variables);
 
-  return <RepositoryListContainer repositories={repositories} />;
+  return <RepositoryListContainer repositories={repositories} setVariables={setVariables} />;
   
 };
 

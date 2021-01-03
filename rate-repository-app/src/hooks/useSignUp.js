@@ -7,13 +7,13 @@ import AuthStorageContext from '../contexts/AuthStorageContext';
 const useSignUp = () => {
   const apolloClient = useApolloClient();
   const authStorage = useContext(AuthStorageContext);
-  const [signUpMutate, result] = useMutation( SIGNUP );
+  const [signUpMutate] = useMutation( SIGNUP );
   const [signInMutate, signInResult] = useMutation( SIGNIN );
 
   const signUp = async (credentials) => {
     //try catch
     try {
-      const { data } = await signUpMutate({ variables: {credentials} });
+      await signUpMutate({ variables: {credentials} });
       //console.log(data);
       //console.log(result);
     } catch (e) {
