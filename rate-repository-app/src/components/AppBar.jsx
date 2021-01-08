@@ -73,6 +73,7 @@ const AppBar = () => {
         {signedUser.data?.authorizedUser ? 
           <>
             <AppBarTab name="Create a Review" link='/review' />
+            <AppBarTab name="My reviews" link='/userReviews' />
             <LogoutTab  />
           </> :
           <>

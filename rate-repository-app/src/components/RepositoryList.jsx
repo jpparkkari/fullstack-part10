@@ -14,6 +14,29 @@ const styles = StyleSheet.create({
   },
 });
 
+const pickerSelectStyles = StyleSheet.create({
+  inputIOS: {
+    fontSize: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 10,
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 4,
+    color: 'black',
+    paddingRight: 30, // to ensure the text is never behind the icon
+  },
+  inputAndroid: {
+    fontSize: 16,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    borderWidth: 0.5,
+    borderColor: 'purple',
+    borderRadius: 8,
+    color: 'black',
+    paddingRight: 30, // to ensure the text is never behind the icon
+  },
+});
+
 /*
 const repositories = [
   {
@@ -94,18 +117,24 @@ const Dropdown = ({setVariables}) => {
 
   return (
     <RNPickerSelect
-      onValueChange={(value) => onChange(value) }
+      onValueChange={value => onChange(value) }
       items={[
-        
+        { label: 'Latest repositories', value: 'latest'},
         { label: 'Highest rated repositories', value: 'highest' },
         { label: 'Lowes rated repositories', value: 'lowest' },
       ]}
-      placeholder={{ label: 'Latest repositories', value: 'latest'}}
+      placeholder={{ label: 'select sorting', value: ''}}
+      style={pickerSelectStyles}
     />
   );
 };
 
-export const RepositoryListContainer = ({repositories, setVariables, setSearchText} ) => {
+export const RepositoryListContainer = ({
+  repositories, 
+  setVariables, 
+  setSearchText,
+  onEndReach
+} ) => {
   
 /*  const history = useHistory();
 
@@ -124,26 +153,25 @@ export const RepositoryListContainer = ({repositories, setVariables, setSearchTe
       ItemSeparatorComponent={ItemSeparator}
       ListHeaderComponent={
         <>
-          Search: <TextInput
+          <TextInput
             style = {{backgroundColor: 'white'}}
             onChangeText={value => setSearchText(value)}
-          
+            placeholder="Search"
           />
           < Dropdown setVariables={setVariables} />
         </>
       }
       // other props
       renderItem={({ item }) => {
-        return (
-        
+        return (    
           <Link to={{ pathname:`/repository/${item.id}`}} component={TouchableOpacity} activeOpacity={0.8}>
-
-          <RepositoryItem item={item}/>
+            <RepositoryItem item={item}/>
           </Link>
         );
-      }
-    }
+      }}
       keyExtractor={(item, index) => index.toString()}
+      onEndReached={onEndReach}
+      onEndReachedThreshold={0.5}
     />
   );
 };
@@ -154,9 +182,25 @@ const RepositoryList = () => {
   const [searchText, setSearchText] = useState('');
   const [searchKeyword] = useDebounce(searchText, 500);
   
-  const { repositories } = useRepositories({...variables, searchKeyword});
+  const { repositories, fetchMore } = useRepositories({
+    ...variables, 
+    searchKeyword,
+    first: 8
+  });
 
-  return <RepositoryListContainer repositories={repositories} setVariables={setVariables} setSearchText={setSearchText}/>;
+  const onEndReach = () => {
+    console.log('You have reached the end of the list');
+    fetchMore();
+  };
+
+  return (
+    <RepositoryListContainer 
+      repositories={repositories} 
+      setVariables={setVariables} 
+      setSearchText={setSearchText}
+      onEndReach={onEndReach}
+    />
+  );
   
 };
 

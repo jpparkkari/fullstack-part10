@@ -70,12 +70,50 @@ const ReviewItem = ({review}) => {
 const SingleRepository = () => {
 
   const { id } = useParams();
-  //console.log(id);
+  console.log(id);
 
-  const { loading, data } = useQuery(GET_REPOSITORY, {
+  const { loading, data, fetchMore } = useQuery(GET_REPOSITORY, {
     fetchPolicy: 'cache-and-network',
-    variables: {id},
+    variables: {id, first: 3},
   });
+
+  //handlefetchmore
+  const handleFetchMore = () => {
+    const canFetchMore =
+      !loading && data && data.repository.reviews.pageInfo.hasNextPage;
+
+    if (!canFetchMore) {
+      console.log('cannot fetch more');
+      console.log(`loading: ${loading}, data.repositories: ${data.repository.reviews.pageInfo.hasNextPage}`);
+      return;
+    }
+  
+    fetchMore({
+      query: GET_REPOSITORY,
+      variables: {
+        id,
+        after: data.repository.reviews.pageInfo.endCursor,
+        first: 3
+      },
+      updateQuery: (previousResult, { fetchMoreResult }) => {
+        const nextResult = {
+          repository: {
+            ...fetchMoreResult.repository,
+            reviews: {
+              ...fetchMoreResult.repository.reviews,
+              edges: [
+                ...previousResult.repository.reviews.edges,
+                ...fetchMoreResult.repository.reviews.edges,
+              ],
+            },
+          },
+        };
+        console.log('new result fetched');
+        return nextResult;
+      },
+    });
+  };
+
   const repository = data?.repository;
   const reviews = data?.repository.reviews.edges.map((edge) => edge.node);
   if (loading) return <Text>loading...</Text>;
@@ -83,6 +121,8 @@ const SingleRepository = () => {
   return (
     <FlatList
       data={reviews}
+      onEndReached={handleFetchMore}
+      onEndReachedThreshold={0.5}
       renderItem={({ item }) => <ReviewItem review={item} />}
       keyExtractor={({ id }) => id}
       ListHeaderComponent={() => <Repository repository={repository} />}
